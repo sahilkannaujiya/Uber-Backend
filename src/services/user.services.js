@@ -5,7 +5,7 @@ import User from "../models/user.models.js";
     throw new Error("All fields are required")
   }
 
-  const user = User.create({
+    const user = User.create({
     fullname: {
       firstname,
       lastname
