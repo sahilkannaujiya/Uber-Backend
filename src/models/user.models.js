@@ -30,12 +30,11 @@ const userSchema = new Schema(
     socketId: {
       type: String,
     },
-  },
-  { timestamps: true }
+  }
 );
 
 userSchema.methods.genrateAuthToken = function () {
-  const token = jwt.sign({ _id: this._id }, process.env.JWT_SECRET, {expiresIn: "6d"});
+  const token = jwt.sign({ _id: this._id }, process.env.JWT_SECRET, {expiresIn: "1h"});
   return token;
 };
 
