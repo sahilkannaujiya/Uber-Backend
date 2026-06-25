@@ -2,7 +2,7 @@ import express from 'express';
 import { Router } from 'express';
 import {body} from "express-validator";
 import { registerCaptain, loginCaptain, getCaptainProfile, logoutCaptain } from '../controllers/captain.controller.js';
-import { authCaptainMiddleware } from '../middlewares/auth.middleware.js';
+import { authMiddleware, authorizeRole } from '../middlewares/auth.middleware.js';
 
 
 const router = Router();
@@ -21,9 +21,9 @@ router.post('/login', [
   body('password').isLength({min: 6}).withMessage('Password must be at least 6 charecters long')
 ], loginCaptain);
 
-router.get('/profile', authCaptainMiddleware, getCaptainProfile);
+router.get('/profile', authMiddleware,authorizeRole("captain"), getCaptainProfile);
 
-router.get('/logout', authCaptainMiddleware, logoutCaptain);
+router.get('/logout', authMiddleware,authorizeRole("captain"), logoutCaptain);
 export {
   router
 }

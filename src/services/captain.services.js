@@ -5,7 +5,7 @@ const createCaptain = async ({firstname, lastname, email, password, color, plate
     throw new Error("All fields are required");
   }
 
-  const captain = Captain.create({
+  const captain = await Captain.create({
     fullname: {
       firstname,
       lastname

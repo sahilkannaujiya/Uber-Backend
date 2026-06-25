@@ -26,6 +26,10 @@ const captainSchema = new mongoose.Schema({
     required: true,
     minlength: [6, "Password must be at least 6 characters long"],
   },
+  role: {
+    type: String,
+    default: "captain"
+  },
   socketId: {
     type: String,
   },
@@ -65,20 +69,25 @@ const captainSchema = new mongoose.Schema({
     },
   },
 });
+captainSchema.pre("save", async function () {
+  if (!this.isModified("password")) return;
+
+  this.password = await bcrypt.hash(this.password, 10);
+  next();
+});
 
 captainSchema.methods.generateAuthToken = function () {
-  const token = jwt.sign({ _id: this._id }, process.env.JWT_SECRET, {expiresIn: "1h"});
+  const token = jwt.sign(
+    { id: this._id, role: "captain" },
+    process.env.JWT_SECRET,
+    { expiresIn: "1h" }
+  );
   return token;
-}
+};
 
 captainSchema.methods.comparePassword = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
-
-captainSchema.statics.hashPassword = async function (password) {
-  return await bcrypt.hash(password, 10);
-}
-
 
 const Captain = mongoose.model("Captain", captainSchema);
 export default Captain;
