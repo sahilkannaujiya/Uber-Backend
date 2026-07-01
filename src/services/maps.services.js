@@ -11,8 +11,8 @@ const getAddressCoordinate = async (address) => {
         "User-Agent": "Uber-Clone/1.0",
       },
     });
-    console.log(data);
-    console.log(data.features);
+    // console.log(data);
+    // console.log(data.features);
     if (!data.length) {
       throw new Error("Address not found");
     }
@@ -75,8 +75,13 @@ const getAutoCompleteSuggestion = async (input) => {
       lng: Number(place.lon),
     }));
   } catch (error) {
-    throw new Error("Unable to fetch suggestions");
-  }
+  console.error("Axios Error:");
+  console.error("Status:", error.response?.status);
+  console.error("Data:", error.response?.data);
+  console.error("Message:", error.message);
+
+  throw error;
+}
 };
 
 export { getAddressCoordinate, getDistanceTime, getAutoCompleteSuggestion };

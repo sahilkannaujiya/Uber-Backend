@@ -71,7 +71,7 @@ const loginUser = async (req, res) => {
     role: user.role,
   };
 
-  return res.status(200).json({ token, user,safeUser });
+  return res.status(200).json({ token, user, safeUser });
 };
 
 // PROFILE =================

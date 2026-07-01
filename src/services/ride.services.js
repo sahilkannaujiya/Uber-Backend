@@ -6,8 +6,8 @@ const getFare = async (pickup, destination) => {
   if (!pickup || !destination) {
     throw new Error("Pickup and destination are required");
   }
-  console.log("Pickup:", pickup);
-  console.log("Destination:", destination);
+  // console.log("Pickup:", pickup);
+  // console.log("Destination:", destination);
   const { distance, duration } = await getDistanceTime(pickup, destination);
 
   const distanceInKm = distance / 1000;

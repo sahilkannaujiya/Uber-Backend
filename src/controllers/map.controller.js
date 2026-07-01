@@ -58,9 +58,12 @@ const getSuggetions = async (req, res, next) => {
     res.status(200).json(suggestions)
     
   } catch (error) {
-    res.status(500).json({message: "Internal server error"})
-  
-  }
+  console.error("getSuggestions Error:", error);
+  res.status(500).json({
+    message: error.message,
+    stack: error.stack,
+  });
+}
 }
 
 

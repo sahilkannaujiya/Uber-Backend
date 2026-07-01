@@ -19,10 +19,12 @@ router.get("/get-distance",
   authMiddleware, getDistance
 );
 
-router.get('/get-suggestions', 
-  query("input").isString().isLength({ min: 3 }),
-  authMiddleware, getSuggetions
-)
+router.get(
+  "/get-suggestions",
+  query("input").trim().isString().isLength({ min: 1 }),
+  authMiddleware,
+  getSuggetions
+);
 
 
 
