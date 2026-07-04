@@ -15,14 +15,15 @@ const initializeSocket = (server) => {
     console.log(`A user connected : ${socket.id}`);
 
     socket.on("join", async (data) => {
+      
       const { userId, role } = data;
       if (role === "user") {
-        const user = await User.findByIdAndUpdate(userId, { socketId: socket.id }, { new: true });
+        const user = await User.findByIdAndUpdate(userId, { socketId: socket.id });
         if (user) {
           socket.join(`user_${userId}`);
         }
       } else if (role === "captain") {
-        const captain = await Captain.findByIdAndUpdate(userId, { socketId: socket.id }, { new: true });
+        const captain = await Captain.findByIdAndUpdate(userId, { socketId: socket.id });
         if (captain) {
           socket.join(`captain_${userId}`);
         }

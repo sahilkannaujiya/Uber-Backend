@@ -39,9 +39,12 @@ const getDistance = async(req, res, next) => {
     const distanceTime = await getDistanceTime(origin, destination);
     res.status(200).json(distanceTime)
     
-  } catch (error) {
-    res.status(500).json({message: 'Internal server error'})
-  }
+  } catch (err) {
+  console.error(err);
+  res.status(500).json({
+    message: err.message,
+  });
+}
 }
 
 const getSuggetions = async (req, res, next) => {
