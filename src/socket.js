@@ -12,10 +12,8 @@ const initializeSocket = (server) => {
     },
   });
   io.on("connection", (socket) => {
-    console.log(`A user connected : ${socket.id}`);
 
     socket.on("join", async (data) => {
-
       const { role, userId, captainId } = data;
 
       if (role === "user") {
@@ -42,6 +40,29 @@ const initializeSocket = (server) => {
         if (captain) {
           socket.join(`captain_${captainId}`);
         }
+      }
+    });
+
+    socket.on("update-location-captain", async (data) => {
+      try {
+        const { userId, location } = data;
+
+        const captain = await Captain.findByIdAndUpdate(
+          userId,
+          {
+            location: {
+              type: "Point",
+              coordinates: [location.lng, location.ltd],
+            },
+          },
+          {
+            returnDocument: "after",
+          }
+        );
+
+        //console.log("Updated Captain:", captain);
+      } catch (err) {
+        console.log(err);
       }
     });
 

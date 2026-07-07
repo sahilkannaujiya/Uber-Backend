@@ -61,19 +61,22 @@ const captainSchema = new mongoose.Schema({
     },
   },
   location: {
-    latitude: {
-      type: Number,
-    },
-    longitude: {
-      type: Number,
-    },
+  type: {
+    type: String,
+    enum: ["Point"],
+    default: "Point",
   },
+  coordinates: {
+    type: [Number], // [longitude, latitude]
+    default: [0, 0],
+  },
+},
 });
 captainSchema.pre("save", async function () {
   if (!this.isModified("password")) return;
 
   this.password = await bcrypt.hash(this.password, 10);
-  next();
+  
 });
 
 captainSchema.methods.generateAuthToken = function () {
@@ -89,5 +92,6 @@ captainSchema.methods.comparePassword = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
 
-const Captain = mongoose.model("Captain", captainSchema);
+captainSchema.index({ location: "2dsphere" });
+const Captain = mongoose.model("Captain", captainSchema)
 export default Captain;

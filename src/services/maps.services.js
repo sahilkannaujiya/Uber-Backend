@@ -1,4 +1,5 @@
 import axios from "axios";
+import Captain from "../models/captain.models.js";
 
 const getAddressCoordinate = async (address) => {
   try {
@@ -75,13 +76,34 @@ const getAutoCompleteSuggestion = async (input) => {
       lng: Number(place.lon),
     }));
   } catch (error) {
-  console.error("Axios Error:");
-  console.error("Status:", error.response?.status);
-  console.error("Data:", error.response?.data);
-  console.error("Message:", error.message);
+    console.error("Axios Error:");
+    console.error("Status:", error.response?.status);
+    console.error("Data:", error.response?.data);
+    console.error("Message:", error.message);
 
-  throw error;
-}
+    throw error;
+  }
 };
 
-export { getAddressCoordinate, getDistanceTime, getAutoCompleteSuggestion };
+const getCaptainInRadius = async (ltd, lng, radius) => {
+  if (
+    typeof ltd !== "number" ||
+    typeof lng !== "number" ||
+    Number.isNaN(ltd) ||
+    Number.isNaN(lng)
+  ) {
+    throw new Error(
+      `Invalid coordinates: ltd=${ltd}, lng=${lng}`
+    );
+  }
+
+  return await Captain.find({
+    location: {
+      $geoWithin: {
+        $centerSphere: [[lng, ltd], radius / 6378.1],
+      },
+    },
+  });
+};
+
+export { getAddressCoordinate, getDistanceTime, getAutoCompleteSuggestion, getCaptainInRadius };

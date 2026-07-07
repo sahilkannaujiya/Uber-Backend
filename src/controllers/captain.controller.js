@@ -9,6 +9,7 @@ const registerCaptain = async (req, res) => {
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
+  
 
   const { email, fullname, password, vehicle } = req.body;
 
@@ -20,12 +21,15 @@ const registerCaptain = async (req, res) => {
 
   // IMPORTANT: password is raw (handled by schema pre-save hook)
   const newCaptain = await createCaptain({
-    firstname: fullname.firstname,
-    lastname: fullname.lastname,
-    email,
-    password,
-    vehicle,
-  });
+  firstname: fullname.firstname,
+  lastname: fullname.lastname,
+  email,
+  password,
+  color: vehicle.color,
+  plate: vehicle.plate,
+  capacity: vehicle.capacity,
+  vehicleType: vehicle.vehicleType,
+});
 
   const token = newCaptain.generateAuthToken();
 

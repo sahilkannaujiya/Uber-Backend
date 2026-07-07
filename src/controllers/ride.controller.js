@@ -1,6 +1,8 @@
 import { validationResult } from "express-validator";
 import { createRide, getFare } from "../services/ride.services.js";
+import {getCaptainInRadius, getAddressCoordinate} from "../services/maps.services.js"
 import { query } from "express-validator";
+import { sendMessageToSocketId } from "../socket.js";
 
 const userRide = async (req, res) => {
   const errors = validationResult(req);
@@ -21,11 +23,32 @@ const userRide = async (req, res) => {
       vehicleType
     });
 
+    
+    const pickupCoordinate = await getAddressCoordinate(pickup);
+    const nearbyCaptains = await getCaptainInRadius(
+      pickupCoordinate.lat,
+      pickupCoordinate.lng,
+       3// radius in kilometers
+    );
+
+    ride.otp = "";
+    nearbyCaptains.map(captain => {
+      sendMessageToSocketId(captain.socketId, {
+        event: "new-ride",
+        data: ride
+      })
+    })
+
     return res.status(201).json(ride);
+    
   } catch (error) {
-    return res.status(500).json({
-      message: error.message
-    });
+     console.error(error);
+
+    if (!res.headersSent) {
+        return res.status(500).json({
+            message: error.message
+        });
+    }
   }
 };
 
